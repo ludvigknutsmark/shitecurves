@@ -100,17 +100,12 @@ if __name__ == "__main__":
     a = p-3
     b = int("0x64210519e59c80e70fa7e9ab72243049feb8deecc146b9b1", 16)
     G = Point(int("0x188da80eb03090f67cbf20eb43a18800f4ff0afd82ff1012",16), int("0x07192b95ffc8da78631011ed6b24cdd573f977a11e794811", 16))
-    ec1 = EC(a,b,G,n,p)
-    ec1.generate_keypair()
 
-    ec2 = EC(a,b,G,n,p)
-    ec2.generate_keypair()
+    for i in range(1000):
+        ec = EC(a,b,G,n,p)
+
+        ec.generate_keypair()
      
-    # Verify session secret
-    assert ec1.multiply(ec1.private, ec2.public) == ec1.multiply(ec2.private, ec1.public)
-
-    from hashlib import sha1
-    r,s = ec1.sign(sha1("my signature").hexdigest())
-    
-    ec2.verify_signature((r,s), ec1.public, sha1("my signature").hexdigest())
-    print "Signatures match"
+        H = "719609852b46b8ea9a5fcd39eb7bc9088fa36399"    
+        r,s = ec.sign(H)
+        ec.verify_signature((r,s), ec.public, H)
